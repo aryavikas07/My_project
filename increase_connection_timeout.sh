@@ -1,8 +1,3 @@
-
-To increase the connection timeout to 5 hours (which is 18000 seconds), you can modify the ClientAliveInterval parameter to send a "keepalive" message every 18000 seconds and set ClientAliveCountMax to 0 to indicate no limit on consecutive failed messages. Here's the modified script:
-
-bash
-Copy code
 #!/bin/bash
 
 # Update SSH configuration to increase connection timeout to 5 hours
@@ -17,3 +12,4 @@ sudo systemctl restart sshd
 echo "SSH configuration updated."
 echo "New SSH configuration:"
 grep -E '^ClientAliveInterval|^ClientAliveCountMax' /etc/ssh/sshd_config
+
