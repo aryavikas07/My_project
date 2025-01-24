@@ -1,1 +1,154 @@
 
+WordPress Application Deployment (CMS)
+
+This project documents the steps to deploy a WordPress application using Docker and MySQL. Below are the detailed steps for setting up the environment and configuring the application.
+
+Project Overview
+
+The goal of this project is to showcase the deployment of a WordPress Content Management System (CMS) using Docker containers for both WordPress and MySQL. The project demonstrates the use of Docker for containerized application deployment and highlights the configuration steps required for successful implementation.
+
+Steps to Deploy WordPress Application
+
+1. Setup and Prerequisites
+
+Install Docker:
+
+Update the package index and install Docker:
+
+sudo apt-get update -y
+sudo apt-get install -y docker.io
+
+Verify Docker installation:
+
+docker --version
+
+Verify Docker is Running:
+
+Start the Docker service:
+
+sudo systemctl start docker
+
+Enable Docker to start on boot:
+
+sudo systemctl enable docker
+
+Optional: Add Current User to Docker Group:
+
+Add your user to the docker group to avoid using sudo:
+
+sudo usermod -aG docker $USER
+
+Log out and back in to apply the changes.
+
+2. Deploy MySQL Container
+
+Run MySQL Container:
+
+Start a MySQL container with the required environment variables:
+
+docker run -d --name mysql-db \
+  -e MYSQL_ROOT_PASSWORD=Welcome@123 \
+  -e MYSQL_DATABASE=wordpress \
+  -e MYSQL_ROOT_HOST='%' \
+  mysql
+
+Verify the container is running:
+
+docker ps
+
+Inspect MySQL Logs:
+
+Check the container logs for errors or initialization confirmation:
+
+docker logs mysql-db
+
+3. Deploy WordPress Container
+
+Run WordPress Container:
+
+Deploy a WordPress container and link it to the MySQL database:
+
+docker run -d --name wordpress-demo \
+  -e WORDPRESS_DB_HOST=172.17.0.2 \
+  -e WORDPRESS_DB_USER=root \
+  -e WORDPRESS_DB_PASSWORD=Welcome@123 \
+  -e WORDPRESS_DB_NAME=wordpress \
+  -p 8090:80 \
+  wordpress
+
+Verify the Container:
+
+Ensure the container is running properly:
+
+docker ps
+
+Check the logs for any errors:
+
+docker logs wordpress-demo
+
+4. Access the WordPress Application
+
+Check Public IP Address:
+
+Use the public IP address of your server to access the application. For example:
+
+http://<public-ip>:8090
+
+Follow WordPress Setup Wizard:
+
+Configure WordPress by following the on-screen installation wizard.
+
+Enter the database details:
+
+Database Name: wordpress
+
+Username: root
+
+Password: Welcome@123
+
+Database Host: 172.17.0.2
+
+5. Persist Data (Optional)
+
+To persist data across container restarts, use Docker volumes:
+
+MySQL with Persistent Data:
+
+docker run -d --name mysql-db \
+  -e MYSQL_ROOT_PASSWORD=Welcome@123 \
+  -e MYSQL_DATABASE=wordpress \
+  -e MYSQL_ROOT_HOST='%' \
+  -v mysql-data:/var/lib/mysql \
+  mysql
+
+WordPress with Persistent Data:
+
+docker run -d --name wordpress-demo \
+  -e WORDPRESS_DB_HOST=172.17.0.2 \
+  -e WORDPRESS_DB_USER=root \
+  -e WORDPRESS_DB_PASSWORD=Welcome@123 \
+  -e WORDPRESS_DB_NAME=wordpress \
+  -p 8090:80 \
+  -v wordpress-data:/var/www/html \
+  wordpress
+
+6. Additional Considerations
+
+Firewall Rules:
+
+Ensure that port 8090 is open in your server's firewall and security groups if hosted on AWS, Azure, or GCP.
+
+Scaling with Docker Compose (Optional):
+
+Use Docker Compose to define and run multi-container applications.
+
+Backup and Restore:
+
+Use docker volume commands or other tools to back up data volumes.
+
+Summary
+
+This project demonstrates a simple yet powerful way to deploy a WordPress CMS using Docker containers. It highlights containerized application deployment, database configuration, and access setup.
+
+Let me know if you encounter any issues or need further assistance!
+
